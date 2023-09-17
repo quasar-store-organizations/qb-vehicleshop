@@ -188,9 +188,10 @@ RegisterNetEvent('qb-vehicleshop:server:financePaymentFull', function(data)
 end)
 
 -- Buy public vehicle outright
-RegisterNetEvent('qb-vehicleshop:server:buyShowroomVehicle', function(vehicle)
+RegisterNetEvent('qb-vehicleshop:server:buyShowroomVehicle', function(args)
     local src = source
-    vehicle = vehicle.buyVehicle
+    local vehicle = args.buyVehicle
+    local vehicleClass = args.vehicleClass
     local pData = QBCore.Functions.GetPlayer(src)
     local cid = pData.PlayerData.citizenid
     local cash = pData.PlayerData.money['cash']
@@ -198,7 +199,7 @@ RegisterNetEvent('qb-vehicleshop:server:buyShowroomVehicle', function(vehicle)
     local vehiclePrice = QBCore.Shared.Vehicles[vehicle]['price']
     local plate = GeneratePlate()
     if cash > tonumber(vehiclePrice) then
-        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {
+        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', {
             pData.PlayerData.license,
             cid,
             vehicle,
@@ -206,13 +207,15 @@ RegisterNetEvent('qb-vehicleshop:server:buyShowroomVehicle', function(vehicle)
             '{}',
             plate,
             'pillboxgarage',
-            0
+            0,
+            vehicleClass
         })
+        print("[DEBUG]: You have purchased a vehicle with the type: ".. vehicleClass)
         TriggerClientEvent('QBCore:Notify', src, Lang:t('success.purchased'), 'success')
         TriggerClientEvent('qb-vehicleshop:client:buyShowroomVehicle', src, vehicle, plate)
         pData.Functions.RemoveMoney('cash', vehiclePrice, 'vehicle-bought-in-showroom')
     elseif bank > tonumber(vehiclePrice) then
-        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', {
+        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', {
             pData.PlayerData.license,
             cid,
             vehicle,
@@ -220,8 +223,10 @@ RegisterNetEvent('qb-vehicleshop:server:buyShowroomVehicle', function(vehicle)
             '{}',
             plate,
             'pillboxgarage',
-            0
+            0,
+            vehicleClass
         })
+        print("[DEBUG]: You have purchased a vehicle with the type: ".. vehicleClass)
         TriggerClientEvent('QBCore:Notify', src, Lang:t('success.purchased'), 'success')
         TriggerClientEvent('qb-vehicleshop:client:buyShowroomVehicle', src, vehicle, plate)
         pData.Functions.RemoveMoney('bank', vehiclePrice, 'vehicle-bought-in-showroom')
@@ -231,7 +236,7 @@ RegisterNetEvent('qb-vehicleshop:server:buyShowroomVehicle', function(vehicle)
 end)
 
 -- Finance public vehicle
-RegisterNetEvent('qb-vehicleshop:server:financeVehicle', function(downPayment, paymentAmount, vehicle)
+RegisterNetEvent('qb-vehicleshop:server:financeVehicle', function(downPayment, paymentAmount, vehicle, vehType)
     local src = source
     downPayment = tonumber(downPayment)
     paymentAmount = tonumber(paymentAmount)
@@ -248,7 +253,7 @@ RegisterNetEvent('qb-vehicleshop:server:financeVehicle', function(downPayment, p
     local plate = GeneratePlate()
     local balance, vehPaymentAmount = calculateFinance(vehiclePrice, downPayment, paymentAmount)
     if cash >= downPayment then
-        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state, balance, paymentamount, paymentsleft, financetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', {
+        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state, balance, paymentamount, paymentsleft, financetime, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', {
             pData.PlayerData.license,
             cid,
             vehicle,
@@ -260,13 +265,15 @@ RegisterNetEvent('qb-vehicleshop:server:financeVehicle', function(downPayment, p
             balance,
             vehPaymentAmount,
             paymentAmount,
-            timer
+            timer,
+            vehType
         })
+        print("[DEBUG]: You have purchased a vehicle with the type: ".. vehType)
         TriggerClientEvent('QBCore:Notify', src, Lang:t('success.purchased'), 'success')
         TriggerClientEvent('qb-vehicleshop:client:buyShowroomVehicle', src, vehicle, plate)
         pData.Functions.RemoveMoney('cash', downPayment, 'vehicle-bought-in-showroom')
     elseif bank >= downPayment then
-        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state, balance, paymentamount, paymentsleft, financetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', {
+        MySQL.insert('INSERT INTO player_vehicles (license, citizenid, vehicle, hash, mods, plate, garage, state, balance, paymentamount, paymentsleft, financetime, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', {
             pData.PlayerData.license,
             cid,
             vehicle,
@@ -278,8 +285,10 @@ RegisterNetEvent('qb-vehicleshop:server:financeVehicle', function(downPayment, p
             balance,
             vehPaymentAmount,
             paymentAmount,
-            timer
+            timer,
+            vehType
         })
+        print("[DEBUG]: You have purchased a vehicle with the type: ".. vehType)
         TriggerClientEvent('QBCore:Notify', src, Lang:t('success.purchased'), 'success')
         TriggerClientEvent('qb-vehicleshop:client:buyShowroomVehicle', src, vehicle, plate)
         pData.Functions.RemoveMoney('bank', downPayment, 'vehicle-bought-in-showroom')

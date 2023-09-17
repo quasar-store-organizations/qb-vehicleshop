@@ -13,6 +13,7 @@ Config.SortAlphabetically = true -- will sort make, category, and vehicle select
 Config.HideCategorySelectForOne = true -- will hide the category selection menu if a shop only sells one category of vehicle or a make has only one category
 Config.Shops = {
     ['pdm'] = {
+        ['vehType'] = 'car', -- Select 'car', 'boat' or 'plane' for advanced garages
         ['Type'] = 'free-use', -- no player interaction is required to purchase a car
         ['Zone'] = {
             ['Shape'] = {--polygon that surrounds the shop
@@ -83,6 +84,7 @@ Config.Shops = {
         },
     },
     ['luxury'] = {
+        ['vehType'] = 'car', -- Select 'car', 'boat' or 'plane' for advanced garages
         ['Type'] = 'managed', -- meaning a real player has to sell the car
         ['Zone'] = {
             ['Shape'] = {
@@ -144,6 +146,7 @@ Config.Shops = {
         }
     }, -- Add your next table under this comma
     ['boats'] = {
+        ['vehType'] = 'boat', -- Select 'car', 'boat' or 'plane' for advanced garages
         ['Type'] = 'free-use', -- no player interaction is required to purchase a vehicle
         ['Zone'] = {
             ['Shape'] = {--polygon that surrounds the shop
@@ -190,6 +193,7 @@ Config.Shops = {
         },
     },
     ['air'] = {
+        ['vehType'] = 'plane', -- Select 'car', 'boat' or 'plane' for advanced garages
         ['Type'] = 'free-use', -- no player interaction is required to purchase a vehicle
         ['Zone'] = {
             ['Shape'] = {--polygon that surrounds the shop
@@ -236,6 +240,7 @@ Config.Shops = {
         },
     },
     ['truck'] = {
+        ['vehType'] = 'car', -- Select 'car', 'boat' or 'plane' for advanced garages
         ['Type'] = 'free-use', -- no player interaction is required to purchase a car
         ['Zone'] = {
             ['Shape'] = {--polygon that surrounds the shop
